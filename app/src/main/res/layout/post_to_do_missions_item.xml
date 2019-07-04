@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   >
+
+    <TextView
+        android:id="@+id/text_mission"
+        android:text="mission"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/text_mission_date"
+        android:text="mission date"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:layout_below="@+id/text_mission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/text_mission_contact"
+        android:text="mission contact"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:layout_below="@+id/text_mission_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

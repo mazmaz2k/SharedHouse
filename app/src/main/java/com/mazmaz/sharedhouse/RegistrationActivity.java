@@ -34,7 +34,6 @@ public class RegistrationActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase firebaseDatabase;
     public static final int REQUEST_CODE = 1234;
-//    private LocationRequest locationRequest;
 
 
 
@@ -101,7 +100,7 @@ public class RegistrationActivity extends AppCompatActivity {
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 //                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);   // Initialize the location update google api
-//                    Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
                 }
@@ -137,6 +136,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     sendUserData(inputName, inputPw);
                     Toast.makeText(RegistrationActivity.this,"You've been registered successfully.",Toast.LENGTH_SHORT).show();
+                    finish();
                     startActivity(new Intent(RegistrationActivity.this,MainActivity.class));
                 }
                 else{
@@ -176,4 +176,9 @@ public class RegistrationActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 }

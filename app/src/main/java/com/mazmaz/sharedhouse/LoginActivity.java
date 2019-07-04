@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this,PWresetActivity.class));
+                startActivity(new Intent(LoginActivity.this,PasswordResetActivity.class));
             }
         });
 
@@ -176,4 +176,10 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+
+    }
 }

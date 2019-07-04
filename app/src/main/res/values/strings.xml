@@ -14,4 +14,11 @@
     <string name="password_reset">Password reset</string>
     <string name="login">LogIn</string>
     <string name="join_us">Join us</string>
+    <string name="create_new_house_in_db">Create new house in DB</string>
+    <string name="enter_adress">Enter Adress</string>
+    <string name="enter_city">Enter City</string>
+    <string name="post_shared_house">Post shared house</string>
+    <string name="update_shared_house">Update shared house</string>
+    <string name="reset_password">Reset password</string>
+    <string name="go_back_to_sign_in">Go back to Sign In.</string>
 </resources>

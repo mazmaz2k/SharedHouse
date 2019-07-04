@@ -10,7 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnLogout;
+    private Button btnLogout, btn_create_new_house;
     private FirebaseAuth firebaseAuth;
 
     @Override
@@ -32,6 +32,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,LoginActivity.class));
             }
         });
+
+        btn_create_new_house = findViewById(R.id.btn_create_new_house);
+        btn_create_new_house.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                startActivity(new Intent(MainActivity.this, CreateNewSharedHouse.class));
+            }
+        });
+
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
     }
 }

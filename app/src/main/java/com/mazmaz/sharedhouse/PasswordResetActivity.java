@@ -15,7 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class PWresetActivity extends AppCompatActivity {
+public class PasswordResetActivity extends AppCompatActivity {
 
     private ImageView ivLogo;
     private TextView ivPWreset;
@@ -45,11 +45,11 @@ public class PWresetActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(PWresetActivity.this, "Email has been sent successfully.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PasswordResetActivity.this, "Email has been sent successfully.", Toast.LENGTH_SHORT).show();
                                 finish();
-                                startActivity(new Intent(PWresetActivity.this, LoginActivity.class));
+                                startActivity(new Intent(PasswordResetActivity.this, LoginActivity.class));
                             } else {
-                                Toast.makeText(PWresetActivity.this, "Invalid email address.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PasswordResetActivity.this, "Invalid email address.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -63,7 +63,7 @@ public class PWresetActivity extends AppCompatActivity {
         tvSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(PWresetActivity.this,LoginActivity.class));
+                startActivity(new Intent(PasswordResetActivity.this,LoginActivity.class));
             }
         });
 
