@@ -1,12 +1,17 @@
 package com.mazmaz.sharedhouse;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class SharedHouse extends AppCompatActivity {
 
     TextView address_txt, city_txt;
+    Button create_new_todo_item_btn, show_all_todo_items_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,10 +22,45 @@ public class SharedHouse extends AppCompatActivity {
         city_txt = findViewById(R.id.house_city_txt);
         final String address_t = getIntent().getStringExtra("sharedHouseAddress");
         final String city_t = getIntent().getStringExtra("sharedHouseCity");
+        final String houseId = getIntent().getStringExtra("sharedHouseId");
+        final String sharedUserId = getIntent().getStringExtra("sharedUserId");
+        show_all_todo_items_btn = findViewById(R.id.show_all_todo_items_btn);
+        create_new_todo_item_btn = findViewById(R.id.create_new_todo_item_btn);
+        Log.d("Testing222",address_t);
 
-        address_txt.setText(address_t);
-        city_txt.setText(city_t);
 
+        address_txt.append(address_t);
+        city_txt.append(city_t);
+
+        create_new_todo_item_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(SharedHouse.this, CreateNewToDoActivity.class);
+                intent.putExtra("sharedHouseId", sharedUserId+"/"+houseId);
+                intent.putExtra("house_address",address_t );
+                intent.putExtra("house_city", city_t );
+
+                startActivity(intent);
+            }
+        });
 
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        try {
+//            final String address_t = getIntent().getStringExtra("shared_House_address");
+//            final String city_t = getIntent().getStringExtra("shared_House_city");
+//
+//            address_txt.append(address_t);
+//            city_txt.append(city_t);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
 }

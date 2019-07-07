@@ -1,17 +1,14 @@
 package com.mazmaz.sharedhouse;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,15 +17,13 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+
 
 public class CreateNewSharedHouse extends AppCompatActivity {
 
@@ -42,13 +37,18 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     FirebaseRecyclerAdapter<postNewHouse, SharedHouseRecycleViewHolder> adapter;
     postNewHouse selectPost;
     String selectedKey;
-
+    private String userToken;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_shared_house);
+        userToken = getIntent().getStringExtra("UserToken");
+        if(userToken==null){
+            Log.d("Test", "user Is Empty");
+        }
+        Log.d("Test",userToken);
         btn_post_house = findViewById(R.id.btn_post_house);
         btn_update_house = findViewById(R.id.btn_update_house);
         btn_delete_house = findViewById(R.id.btn_delete_house);
@@ -57,7 +57,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         recyclerView = findViewById(R.id.new_sharedHouse_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("SharedHouseUsers");
+        databaseReference = firebaseDatabase.getReference(userToken);
 
 
         displayHouse();
@@ -80,7 +80,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         btn_post_house.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Test","in new house btn " );
+//                Log.d("Test","in new house btn " );
                 postHouse();
 
             }
@@ -91,7 +91,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
             public void onClick(View view) {
                 databaseReference.
                         child(selectedKey).setValue(
-                                new postNewHouse(enter_home_address.getText().toString(),enter_home_city.getText().toString()
+                                new postNewHouse(enter_home_address.getText().toString(),enter_home_city.getText().toString(),userToken
                                 )).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -141,9 +141,11 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     }
 
     private void postHouse(){
+//        Log.d("Test",userToken);
+
         String address = enter_home_address.getText().toString();
         String city = enter_home_city.getText().toString();
-        postNewHouse postNewHouse = new postNewHouse(address, city);
+        postNewHouse postNewHouse = new postNewHouse(address, city, userToken);
         databaseReference.push().setValue(postNewHouse);
         displayHouse();
 
@@ -161,6 +163,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     }
 
     private void displayHouse(){
+
         options =
                 new FirebaseRecyclerOptions.Builder<postNewHouse>()
                     .setQuery(databaseReference, postNewHouse.class).build();
@@ -169,21 +172,25 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                 new FirebaseRecyclerAdapter<postNewHouse, SharedHouseRecycleViewHolder>(options) {
                     @Override
                     protected void onBindViewHolder(@NonNull SharedHouseRecycleViewHolder holder, final int position, @NonNull final postNewHouse model) {
+
                         holder.text_house_address.setText(model.getAddress());
                         holder.text_house_city.setText(model.getCity());
-
+                        holder.sharedHouseId =getSnapshots().getSnapshot(position).getKey();
+                        holder.sharedUserId = userToken;
 
                         holder.setiHouseItemClickListener(new IHouseItemClickListener() {
                             @Override
                             public void onClick(View view, int postion) {
                                 selectPost = model;
                                 selectedKey= getSnapshots().getSnapshot(position).getKey();
-                                Log.d("Key house item", ""+selectedKey);
+//                                Log.d("Test", ""+selectedKey);
+
 
                                 //bind data
 
                                 enter_home_address.setText(model.getAddress());
                                 enter_home_city.setText(model.getCity());
+
 
 
                             }
@@ -193,6 +200,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                     @NonNull
                     @Override
                     public SharedHouseRecycleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+
                         View itemView = LayoutInflater.from(getBaseContext()).inflate(R.layout.post_shared_houses_item, viewGroup, false);
                         return new SharedHouseRecycleViewHolder(itemView);
                     }

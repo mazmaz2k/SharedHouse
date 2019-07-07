@@ -39,8 +39,15 @@
         <Button
             android:id="@+id/btn_create_new_house"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="@string/create_new_house_in_db" />
+
+
+        <Button
+            android:id="@+id/btn_existing_houses"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="@string/existing_houses" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
