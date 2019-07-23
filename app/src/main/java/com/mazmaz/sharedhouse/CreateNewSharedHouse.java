@@ -225,7 +225,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
             throw new ExceptionInInitializerError();
         databaseReference.child(keyToken).child("shared houses").push().setValue(postNewHouse);
         Log.d("Test", "key token :  "+ keyToken);
-        Log.d("Test", "ddddddddd    "+databaseReference.child(keyToken).child("shared houses"));
+//        Log.d("Test", "ddddddddd    "+databaseReference.child(keyToken).child("shared houses"));
 
         if(keyToken==null){
             throw new ExceptionInInitializerError();
@@ -288,8 +288,6 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                     @NonNull
                     @Override
                     public SharedHouseRecycleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                        Log.d("Test", "DDDDDDDDDDDDDD    "+viewGroup.addStatesFromChildren());
-
                         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.post_shared_houses_item, viewGroup, false);
                         return new SharedHouseRecycleViewHolder(itemView);
                     }

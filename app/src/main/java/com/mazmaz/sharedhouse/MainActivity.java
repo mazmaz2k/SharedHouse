@@ -1,6 +1,7 @@
 package com.mazmaz.sharedhouse;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,9 +10,13 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +53,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         btn_create_new_house = findViewById(R.id.btn_create_new_house);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        mDatabase = firebaseDatabase.getReference("SharedHouseUsers");
+
         btn_create_new_house.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,9 +68,8 @@ public class MainActivity extends AppCompatActivity {
                 i.putExtra("UserToken", user.getUid());
                 i.putExtra("show_only_houses_list",1);
                 i.putExtra("token_key",key_token);
-                Log.d("Test","888888 "+  user.getUid());
 
-                Log.d("Test","111111 "+key_token);
+//                Log.d("Test","111111 "+key_token);
 
 //                finish();
                 startActivity(i);
@@ -68,21 +77,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        if(key_token==null){
+//            btn_existing_houses.setEnabled(false);
+//        }else{
+//            btn_existing_houses.setEnabled(true);
+//
+//        }
         btn_existing_houses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("Test", "hiiiiiiiii");
+
+
+                setToken();
                 Intent i = new Intent(MainActivity.this, CreateNewSharedHouse.class);
                 i.putExtra("UserToken", user.getUid());
+                i.putExtra("token_key",key_token);
                 i.putExtra("show_only_houses_list",0);
+                Log.d("Test", "token : "+ key_token);
 
 //                finish();
                 startActivity(i);
             }
         });
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabase = firebaseDatabase.getReference("SharedHouseUsers");
 
+//        query.addListenerForSingleValueEvent();
 
+//        Log.d("Test", "Query: "+ query.getRef());
+
+//        query.getRef();
     }
 
 
@@ -100,6 +123,55 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setToken();
+        if(key_token==null){
+            btn_existing_houses.setEnabled(false);
+        }else{
+            btn_existing_houses.setEnabled(true);
+
+        }
+    }
+
+    private void setToken(){
+        final FirebaseUser user = firebaseAuth.getInstance().getCurrentUser() ;
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabase = firebaseDatabase.getReference("SharedHouseUsers");
+
+        mDatabase.child("houses").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean fl = false;
+                for (DataSnapshot children: dataSnapshot.getChildren()){
+                    if(fl==true){
+                        break;
+                    }
+                    for (DataSnapshot child : children.getChildren()) {
+
+                        if(child.getKey().equals("admin mail")){
+                            if(child.getValue().equals(user.getEmail())){
+                                Log.d("Test", "before token: "+ children.getKey());
+                                key_token=children.getKey();
+                                break;
+                            }
+                            continue;
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
     private void writeNewSharedHouse(String userMail) throws IllegalArgumentException{
         if(userMail==null || userMail.isEmpty()) throw new IllegalArgumentException();
         // Create new post at /user-posts/$userid/$postid and at
@@ -111,13 +183,22 @@ public class MainActivity extends AppCompatActivity {
         Map<String, Object> sharedHomeValues = sharedHome.toMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/houses/" + key, sharedHomeValues);
-        childUpdates.put("/user-houses/" + userId + "/" + key, sharedHomeValues);
+        if(key_token==null){
+//            key_token=key;
+            Log.d("Test","NULL in key");
+            childUpdates.put("/houses/" + key, sharedHomeValues);
+            childUpdates.put("/user-houses/" + userId + "/" + key, sharedHomeValues);
+            key_token=key;
+
+        }else{
+            setToken();
+        }
+
 
         mDatabase.updateChildren(childUpdates);
 //        SharedHome sharedHome = new SharedHome(userMail);
 //        mDatabase.updateChildrenAsync(sharedHome+"/gracehop");
-        key_token=key;
+
     }
 
     @Override
