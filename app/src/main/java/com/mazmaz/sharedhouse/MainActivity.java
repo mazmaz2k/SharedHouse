@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference mDatabase;
     String userId;
+    String key_token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
                 writeNewSharedHouse(user.getEmail());
                 Intent i = new Intent(MainActivity.this, CreateNewSharedHouse.class);
                 i.putExtra("UserToken", user.getUid());
+                i.putExtra("show_only_houses_list",1);
+                i.putExtra("token_key",key_token);
+                Log.d("Test","888888 "+  user.getUid());
+
+                Log.d("Test","111111 "+key_token);
 
 //                finish();
                 startActivity(i);
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, CreateNewSharedHouse.class);
                 i.putExtra("UserToken", user.getUid());
+                i.putExtra("show_only_houses_list",0);
 
 //                finish();
                 startActivity(i);
@@ -110,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         mDatabase.updateChildren(childUpdates);
 //        SharedHome sharedHome = new SharedHome(userMail);
 //        mDatabase.updateChildrenAsync(sharedHome+"/gracehop");
-
+        key_token=key;
     }
 
     @Override
