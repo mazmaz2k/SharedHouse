@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
                 writeNewSharedHouse(user.getEmail());
                 Intent i = new Intent(MainActivity.this, CreateNewSharedHouse.class);
-                i.putExtra("UserToken", user.getUid());
+                i.putExtra("UserToken", userId);
                 i.putExtra("show_only_houses_list",1);
                 i.putExtra("token_key",key_token);
 
@@ -86,15 +86,15 @@ public class MainActivity extends AppCompatActivity {
         btn_existing_houses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Test", "hiiiiiiiii");
+//                Log.d("Test", "hiiiiiiiii");
 
 
                 setToken();
                 Intent i = new Intent(MainActivity.this, CreateNewSharedHouse.class);
-                i.putExtra("UserToken", user.getUid());
+                i.putExtra("UserToken", userId);
                 i.putExtra("token_key",key_token);
                 i.putExtra("show_only_houses_list",0);
-                Log.d("Test", "token : "+ key_token);
+                Log.d("Test", "sending token : "+ key_token);
 
 //                finish();
                 startActivity(i);
@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         setToken();
         if(key_token==null){
+
             btn_existing_houses.setEnabled(false);
         }else{
             btn_existing_houses.setEnabled(true);

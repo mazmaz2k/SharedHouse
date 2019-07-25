@@ -12,9 +12,9 @@ import android.widget.TextView;
 public class SharedHouseRecycleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 //    TextView text_mission, text_mission_date,text_mission_contact;
-     TextView text_house_address, text_house_city;
-     Button enter_shared_house_btn;
-     String sharedHouseId, sharedUserId;
+    TextView text_house_address, text_house_city;
+    Button enter_shared_house_btn;
+    String sharedHouseId, sharedUserId;
     IHouseItemClickListener iHouseItemClickListener;
 
     public void setiHouseItemClickListener(IHouseItemClickListener iHouseItemClickListener) {

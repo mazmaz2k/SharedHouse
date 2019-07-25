@@ -29,26 +29,28 @@ public class CreateNewToDoActivity extends FragmentActivity {
     TextView mission_details_txt, enter_mission_title_txt;
     static TextView selected_date_textView;
     Button missions_date_btn, submit_new_mission_btn ;
-    String sharedHouse_address, sharedHouse_city, sharedUserId;
-
-    String sharedHouseId;
+    String sharedHouse_address, sharedHouse_city, sharedUserId, sharedHouseId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_create_new_to_do);
-        final String sharedHouse_id = getIntent().getStringExtra("sharedHouseId");
+        final String sharedHouse_id = getIntent().getStringExtra("shared_HouseId");
         final String sharedHouse_address = getIntent().getStringExtra("house_address");
         final String sharedHouse_city = getIntent().getStringExtra("house_city");
-        final String sharedUserId = getIntent().getStringExtra("sharedUserId");
+        final String sharedUser_Id = getIntent().getStringExtra("shared_UserId");
 
         this.sharedHouse_address = sharedHouse_address;
         this.sharedHouse_city = sharedHouse_city;
-        this.sharedUserId = sharedUserId;
-        Log.d("Test",sharedHouse_id);
-
+        this.sharedUserId = sharedUser_Id;
+        this.sharedHouseId = sharedHouse_id;
+//        Log.d("Test",sharedHouse_id);
+        Log.d("Test","Key token in create mission "+ sharedHouseId);
+        Log.d("Test","User tokenin create mission "+ sharedUserId);
         selected_date_textView = findViewById(R.id.selected_date_textView);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference(sharedHouse_id);
+        databaseReference = firebaseDatabase.getReference("SharedHouseUsers/houses/"+sharedUser_Id+"/shared houses/"+sharedHouse_id);
 
         missions_date_btn = findViewById(R.id.missions_date_btn);
         mission_details_txt = findViewById(R.id.mission_details_txt);
@@ -89,6 +91,11 @@ public class CreateNewToDoActivity extends FragmentActivity {
 
 
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override

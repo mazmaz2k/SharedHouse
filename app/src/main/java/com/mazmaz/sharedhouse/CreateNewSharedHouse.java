@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import static java.lang.System.exit;
 
 
 public class CreateNewSharedHouse extends AppCompatActivity {
@@ -49,9 +51,14 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_shared_house);
-        userToken = getIntent().getStringExtra("UserToken");
+        final String userToken = getIntent().getStringExtra("UserToken");
+        this.userToken = userToken;
+
         final int show_only_houses_list = getIntent().getIntExtra("show_only_houses_list",1);
         final String keyToken= getIntent().getStringExtra("token_key");
+        Log.d("Test","User token"+ keyToken);
+        Log.d("Test","User token"+ userToken);
+
         this.keyToken=keyToken;
         empty_house_list = findViewById(R.id.empty_house_list);
         create_housed_layout= findViewById(R.id.create_house_layout);
@@ -78,7 +85,12 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 //        databaseReference = firebaseDatabase.getReference("sharedhouseusers/SharedHouseUsers/houses/"+keyToken+"/shared houses");
 
         displayHouse();
-
+//        if(selectedKey==null){
+//            Log.d("Test","Delete");
+//            btn_update_house.setEnabled(false);
+//            btn_delete_house.setEnabled(false);
+////            throw new NullPointerException();
+//        }
         databaseReference.addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -99,7 +111,10 @@ public class CreateNewSharedHouse extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                Log.d("Test","in new house btn " );
-                postHouse();
+
+                    postHouse();
+
+
 
             }
         });
@@ -108,26 +123,34 @@ public class CreateNewSharedHouse extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(selectedKey==null){
-                    throw new NullPointerException();
+                    Log.d("Test","Delete???????????????????????????????????");
+//                    throw new NullPointerException();
+                    Toast.makeText(CreateNewSharedHouse.this, "not updated please select !!", Toast.LENGTH_SHORT).show();
+
                 }
-                databaseReference.
-                        child(keyToken).child("shared houses").child(selectedKey)
-                        .setValue(
-                                new postNewHouse(enter_home_address.getText().toString(),enter_home_city.getText().toString(),userToken
-                                )).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(CreateNewSharedHouse.this, "updated", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(CreateNewSharedHouse.this, "Error on updating: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                else
+                 {
 
-                    }
-                });
-                empty_house_list.setVisibility(View.GONE);
 
+                    databaseReference.
+                            child(keyToken).child("shared houses").child(selectedKey)
+                            .setValue(
+                                    new postNewHouse(enter_home_address.getText().toString(),enter_home_city.getText().toString(),keyToken
+                                    )).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(CreateNewSharedHouse.this, "updated", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(CreateNewSharedHouse.this, "Error on updating: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                    empty_house_list.setVisibility(View.GONE);
+
+                }
             }
         });
 
@@ -135,36 +158,45 @@ public class CreateNewSharedHouse extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(selectedKey==null){
-                    throw new NullPointerException();
-                }
-                databaseReference.
-                        child(keyToken).child("shared houses").child(selectedKey)
-                        .removeValue()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(CreateNewSharedHouse.this, "Deleted", Toast.LENGTH_SHORT).show();
+                if (selectedKey == null) {
+                    Log.d("Test", "Delete");
+                    Toast.makeText(CreateNewSharedHouse.this, "No delete please select !!!", Toast.LENGTH_SHORT).show();
+
+//            throw new NullPointerException();
+                } else {
+
+                    databaseReference.
+                            child(keyToken).child("shared houses").child(selectedKey)
+                            .removeValue()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(CreateNewSharedHouse.this, "Deleted", Toast.LENGTH_SHORT).show();
 //                        Log.d("Test", databaseReference.getParent().getKey());
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(CreateNewSharedHouse.this, "Error on delete: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    });
+                    Log.d("Test", "ddddddddddd " + databaseReference.child(keyToken).toString());
+                    selectedKey = null;
+
+                    if (databaseReference.child(userToken).equals("")) {
+                        Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! #3");
+
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(CreateNewSharedHouse.this, "Error on delete: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-
-
-                    }
-                });
-                Log.d("Test", "ddddddddddd "+ databaseReference.child(keyToken).toString());
-
-                if(databaseReference.child(userToken).equals("")){
-                    Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! #3");
-
                 }
             }
         });
 //        DatabaseReference DB_r = databaseReference.child(userToken);
         valueEventListener = new ValueEventListener() {
+
+
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int count = (int) dataSnapshot.getChildrenCount(); //Cast long to int
@@ -179,7 +211,11 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
 
                 }
-
+//                if(selectedKey!=null) {
+//                    Log.d("Test", "no Delete");
+//                    btn_update_house.setEnabled(true);
+//                    btn_delete_house.setEnabled(true);
+//                }
 
             }
 
@@ -200,6 +236,9 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 //        }
 
     }
+
+
+
 
     @Override
     protected void onStop() {
@@ -242,8 +281,9 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 //        if(adapter.getItemCount()>0){
-            displayHouse();
-
+        displayHouse();
+        Log.d("Test","Key token"+ keyToken);
+        Log.d("Test","User token"+ userToken);
         databaseReference.addListenerForSingleValueEvent(valueEventListener);
     }
 
@@ -253,9 +293,15 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                 new FirebaseRecyclerOptions.Builder<postNewHouse>()
                     .setQuery(databaseReference.child(keyToken).child("shared houses"), postNewHouse.class).build();
 
-
+        if(selectedKey!=null) {
+            Log.d("Test", "no Delete");
+            btn_update_house.setEnabled(true);
+            btn_delete_house.setEnabled(true);
+        }
         adapter =
                 new FirebaseRecyclerAdapter<postNewHouse, SharedHouseRecycleViewHolder>(options) {
+
+
 
 
                     @Override
@@ -264,8 +310,11 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                         holder.text_house_address.setText(model.getAddress());
                         holder.text_house_city.setText(model.getCity());
                         holder.sharedHouseId =getSnapshots().getSnapshot(position).getKey();
-                        holder.sharedUserId = selectedKey;
+                        holder.sharedUserId = keyToken;
 
+
+                        Log.d("Test", "sharedUserId in create new shared house: "+ holder.sharedUserId  );
+                        Log.d("Test", "sharedHouseId in create new shared house: "+ holder.sharedHouseId );
                         holder.setiHouseItemClickListener(new IHouseItemClickListener() {
                             @Override
                             public void onClick(View view, int postion) {
