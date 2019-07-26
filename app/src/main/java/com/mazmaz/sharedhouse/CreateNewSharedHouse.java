@@ -26,6 +26,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 import static java.lang.System.exit;
 
 
@@ -120,25 +125,137 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         });
 
         btn_update_house.setOnClickListener(new View.OnClickListener() {
+            //TODO: save the missins when updating
+            /***
+             *
+              * @param view
+             */
             @Override
             public void onClick(View view) {
+
+                final ArrayList<String> missions = new ArrayList<String>();
+                final LinkedList<PostNewTodoMission> postNewTodoMissionList = new LinkedList<>();
+                final LinkedList<HashMap<String, Object>> postNewTodoMissionList_2 = new LinkedList<>();
+                HashMap<String, Object> result = new HashMap<>();
                 if(selectedKey==null){
-                    Log.d("Test","Delete???????????????????????????????????");
 //                    throw new NullPointerException();
                     Toast.makeText(CreateNewSharedHouse.this, "not updated please select !!", Toast.LENGTH_SHORT).show();
 
-                }
-                else
-                 {
+                }else{
 
+                     databaseReference.
+                             child(keyToken).child("shared houses").child(selectedKey).child("mission").addValueEventListener(new ValueEventListener() {
+                         @Override
+                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+//                             boolean fl = false;
+//                             Log.d("Test", "1) in on update data changed ---- "+ keyToken+"/shared houses/"+selectedKey);
+
+//                             for(PostNewTodoMission p : postNewTodoMissionList){
+//                                 Log.d("Test","1) postNewTodoMission "+ p.getMission() +
+//                                         " "+ p.getMissionDate()+" "+ p.getMissionContent());
+
+//                                 HashMap<String, Object> result = new HashMap<>();
+//                                 result.put("Mission Name", p.getMission());
+//                                 result.put("Mission Date", p.getMissionDate());
+//                                 result.put("Mission Content", p.getMissionContent());
+//                                 postNewTodoMissionList_2.add(result);
+
+//                             }
+                             for (DataSnapshot children: dataSnapshot.getChildren()){
+//                                 missions.add(String.valueOf(children.getValue()) + "1");
+//                                 if(fl==true){
+//                                     break;
+//                                 }
+
+//                                 postNewTodoMissionList.add( new PostNewTodoMission(children.child("Mission Name").getValue().toString()
+//                                         ,children.child("Mission Date").getValue().toString(),
+//                                         children.child("Mission Content").getValue().toString()));
+
+                                 if(children.child("Mission Name")==null){
+                                     break;
+                                 }
+                                 try {
+                                     HashMap<String, Object> result = new HashMap<>();
+                                     result.put("Mission Name", children.child("Mission Name").getValue().toString());
+                                     result.put("Mission Date", children.child("Mission Date").getValue().toString());
+                                     result.put("Mission Content", children.child("Mission Content").getValue().toString());
+                                     Log.d("Test","1) postNewTodoMission "+ result.values().toString());
+
+                                     postNewTodoMissionList_2.add(result);
+
+                                 }catch (Exception e ){
+                                     e.printStackTrace();
+                                 }
+
+                                 Log.d("Test","2) postNewTodoMission "+ children.child("Mission Name").getValue().toString() + " "+
+                                         children.child("Mission Date").getValue().toString()+
+                                         " "+ children.child("Mission Content").getValue().toString());
+
+//                                 children.child("Mission Content").getValue();
+//                                 for (DataSnapshot child : children.getChildren()) {
+//
+////                                     missions.add(String.valueOf(child.getValue())+ "2");
+//
+////                                     if(child.getKey().equals("mission")){
+////                                         if(child.getValue().equals(user.getEmail())){
+////                                             Log.d("Test", "setToken token: "+ child.getValue());
+////                                             key_token=children.getKey();
+////                                             break;
+////                                         }
+////                                         continue;
+//                                     }
+//                                 }
+
+                             }
+
+                         }
+
+                         @Override
+                         public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                         }
+                     });
+
+//                     Log.d("Test","postNewTodoMissionList"+ postNewTodoMissionList.toString());
+
+
+
+//                     databaseReference.
+//                             child(keyToken).child("shared houses").child(selectedKey).child("mission").addValueEventListener(new ValueEventListener() {
+//                         @Override
+//                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                             missions[0] = dataSnapshot.getValue();
+//                         }
+//
+//                         @Override
+//                         public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                         }
+//                     })
+//                    for(String s : missions){
+//                        Log.d("Test","ssssss: "+ s);
+//                    }
+////                    Log.d("Test", "Missions ---- "+ missions.toString());
+//
+//                    Log.d("Test", "3) in on update data changed ---- "+ missions.toString());
 
                     databaseReference.
                             child(keyToken).child("shared houses").child(selectedKey)
                             .setValue(
-                                    new postNewHouse(enter_home_address.getText().toString(),enter_home_city.getText().toString(),keyToken
+                                    new postNewHouse(
+                                            enter_home_address.getText().toString(),enter_home_city.getText().toString(),
+                                            keyToken,
+                                            postNewTodoMissionList
                                     )).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            for(HashMap r : postNewTodoMissionList_2){
+                                Log.d("Test","4) postNewTodoMission "+ r.values().toString());
+
+                                databaseReference.
+                                        child(keyToken).child("shared houses").child(selectedKey).child("mission").push().updateChildren(r);
+                            }
                             Toast.makeText(CreateNewSharedHouse.this, "updated", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -148,6 +265,30 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
                         }
                     });
+
+//                    databaseReference.
+//                            child(keyToken).child("shared houses").child(selectedKey).child("mission")
+//                            .setValue(postNewTodoMissionList_2)
+//                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void aVoid) {
+//                            Toast.makeText(CreateNewSharedHouse.this, "Success in adding mission: ", Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Toast.makeText(CreateNewSharedHouse.this, "Error on updating: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    });
+
+//                    HashMap<String, Object> result = new HashMap<>();
+//                    result.put("Mission Name", mission);
+//                    result.put("Mission Date", missionDate);
+//                    result.put("Mission Content", missionContent);
+
+
                     empty_house_list.setVisibility(View.GONE);
 
                 }
@@ -313,8 +454,8 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                         holder.sharedUserId = keyToken;
 
 
-                        Log.d("Test", "sharedUserId in create new shared house: "+ holder.sharedUserId  );
-                        Log.d("Test", "sharedHouseId in create new shared house: "+ holder.sharedHouseId );
+//                        Log.d("Test", "sharedUserId in create new shared house: "+ holder.sharedUserId  );
+//                        Log.d("Test", "sharedHouseId in create new shared house: "+ holder.sharedHouseId );
                         holder.setiHouseItemClickListener(new IHouseItemClickListener() {
                             @Override
                             public void onClick(View view, int postion) {

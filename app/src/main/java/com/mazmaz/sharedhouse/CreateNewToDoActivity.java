@@ -45,8 +45,8 @@ public class CreateNewToDoActivity extends FragmentActivity {
         this.sharedUserId = sharedUser_Id;
         this.sharedHouseId = sharedHouse_id;
 //        Log.d("Test",sharedHouse_id);
-        Log.d("Test","Key token in create mission "+ sharedHouseId);
-        Log.d("Test","User tokenin create mission "+ sharedUserId);
+//        Log.d("Test","Key token in create mission "+ sharedHouseId);
+//        Log.d("Test","User tokenin create mission "+ sharedUserId);
         selected_date_textView = findViewById(R.id.selected_date_textView);
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference(sharedHouse_id);

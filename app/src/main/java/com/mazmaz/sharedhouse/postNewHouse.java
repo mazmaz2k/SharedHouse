@@ -9,10 +9,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.UUID;
 
 public class postNewHouse {
-    private String address, city, uniqueID;
+    private String address, city;
     private LinkedList<String> UsersList;
     private String adminToken;
 
@@ -24,8 +23,15 @@ public class postNewHouse {
     public postNewHouse(String address, String city, String adminToken){
         this.address = address;
         this.city = city;
-        String uniqueID = UUID.randomUUID().toString();
         this.adminToken = adminToken;
+
+    }
+
+    public postNewHouse(String address, String city, String adminToken,LinkedList<PostNewTodoMission> postNewTodoMissionList ){
+        this.address = address;
+        this.city = city;
+        this.adminToken = adminToken;
+        this.postNewTodoMissionList= postNewTodoMissionList;
 
     }
 
@@ -56,9 +62,6 @@ public class postNewHouse {
         return postNewTodoMissionList;
     }
 
-    public String getUniqueID() {
-        return uniqueID;
-    }
 
     public String getAdminToken(){return  this.adminToken;}
 
@@ -74,7 +77,7 @@ public class postNewHouse {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("House Name", uniqueID);
+//        result.put("House Name", uniqueID);
         result.put("House address", address);
         result.put("House city", city);
         result.put("House users", Arrays.asList(getUsersList()));

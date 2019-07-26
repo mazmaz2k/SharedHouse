@@ -28,15 +28,15 @@ public class SharedHouse extends AppCompatActivity {
         create_new_todo_item_btn = findViewById(R.id.create_new_todo_item_btn);
 //        Log.d("Testing222",address_t);
 
-        Log.d("Test","Key token in shared house "+ houseId);
-        Log.d("Test","User token in shared house "+ sharedUserId);
+//        Log.d("Test","Key token in shared house "+ houseId);
+//        Log.d("Test","User token in shared house "+ sharedUserId);
         address_txt.append(address_t);
         city_txt.append(city_t);
 
         create_new_todo_item_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("Test",""+ sharedUserId+"/"+houseId);
+//                Log.d("Test",""+ sharedUserId+"/"+houseId);
                 Intent intent = new Intent(SharedHouse.this, CreateNewToDoActivity.class);
                 intent.putExtra("shared_HouseId", houseId);
                 intent.putExtra("shared_UserId", sharedUserId);
