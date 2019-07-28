@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,13 +21,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
-    private ImageView logo;
-    private TextView ivSignIn;
     private AutoCompleteTextView email, password;
     private TextView forgotPass, signUp;
     private Button btnSignIn;
     private FirebaseAuth firebaseAuth;
-    private FirebaseUser user;
     private ProgressDialog progressDialog;
     public static final int REQUEST_CODE = 1234;
 
@@ -60,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         initializeGUI();
 
-        user = firebaseAuth.getCurrentUser();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
 
         if(user != null) {
             finish();
@@ -103,8 +98,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_CODE:
+        if (requestCode == REQUEST_CODE) {
+//            case REQUEST_CODE:
                 if (grantResults.length > 0 &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                         grantResults[1] == PackageManager.PERMISSION_GRANTED &&
@@ -118,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, R.string.permission_not_granted, Toast.LENGTH_SHORT).show();
                 }
-                break;
+//                break;
         }
 
     }
@@ -148,8 +143,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initializeGUI(){
 
-        logo = findViewById(R.id.ivLogLogo);
-        ivSignIn = findViewById(R.id.ivSignIn);
+//        ImageView logo = findViewById(R.id.ivLogLogo);
+//        TextView ivSignIn = findViewById(R.id.ivSignIn);
         email = findViewById(R.id.atvEmailLog);
         password = findViewById(R.id.atvPasswordLog);
         forgotPass = findViewById(R.id.tvForgotPass);

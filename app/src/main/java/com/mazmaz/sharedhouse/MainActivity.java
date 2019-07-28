@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if(child.getKey().equals("admin mail")){
                             if(child.getValue().equals(user.getEmail())){
-                                Log.d("Test", "setToken token: "+ child.getValue());
+//                                Log.d("Test", "setToken token: "+ child.getValue());
                                 key_token=children.getKey();
                                 break;
                             }

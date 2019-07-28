@@ -50,6 +50,8 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     LinearLayout create_housed_layout;
     TextView empty_house_list;
     ValueEventListener valueEventListener;
+    private int show_only_houses_list;
+    private int houses_count= 0;
 
 
     @Override
@@ -61,9 +63,9 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
         final int show_only_houses_list = getIntent().getIntExtra("show_only_houses_list",1);
         final String keyToken= getIntent().getStringExtra("token_key");
-        Log.d("Test","User token"+ keyToken);
-        Log.d("Test","User token"+ userToken);
-
+        Log.d("Test","Key token(houses) "+ keyToken);
+        Log.d("Test","User token "+ userToken);
+        this.show_only_houses_list = show_only_houses_list;
         this.keyToken=keyToken;
         empty_house_list = findViewById(R.id.empty_house_list);
         create_housed_layout= findViewById(R.id.create_house_layout);
@@ -76,7 +78,6 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         if(userToken==null){
             Log.d("Test", "user Is Empty");
         }
-        Log.d("Test",userToken);
         btn_post_house = findViewById(R.id.btn_post_house);
         btn_update_house = findViewById(R.id.btn_update_house);
         btn_delete_house = findViewById(R.id.btn_delete_house);
@@ -88,8 +89,13 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference("SharedHouseUsers").child("houses");
 
 //        databaseReference = firebaseDatabase.getReference("sharedhouseusers/SharedHouseUsers/houses/"+keyToken+"/shared houses");
+        try{
+            displayHouse();
 
-        displayHouse();
+        }catch (Exception e){
+//            empty_house_list.setVisibility(View.VISIBLE);
+            e.printStackTrace();
+        }
 //        if(selectedKey==null){
 //            Log.d("Test","Delete");
 //            btn_update_house.setEnabled(false);
@@ -125,18 +131,11 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         });
 
         btn_update_house.setOnClickListener(new View.OnClickListener() {
-            //TODO: save the missins when updating
-            /***
-             *
-              * @param view
-             */
             @Override
             public void onClick(View view) {
 
-                final ArrayList<String> missions = new ArrayList<String>();
                 final LinkedList<PostNewTodoMission> postNewTodoMissionList = new LinkedList<>();
                 final LinkedList<HashMap<String, Object>> postNewTodoMissionList_2 = new LinkedList<>();
-                HashMap<String, Object> result = new HashMap<>();
                 if(selectedKey==null){
 //                    throw new NullPointerException();
                     Toast.makeText(CreateNewSharedHouse.this, "not updated please select !!", Toast.LENGTH_SHORT).show();
@@ -188,9 +187,9 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                                      e.printStackTrace();
                                  }
 
-                                 Log.d("Test","2) postNewTodoMission "+ children.child("Mission Name").getValue().toString() + " "+
-                                         children.child("Mission Date").getValue().toString()+
-                                         " "+ children.child("Mission Content").getValue().toString());
+//                                 Log.d("Test","2) postNewTodoMission "+ children.child("Mission Name").getValue().toString() + " "+
+//                                         children.child("Mission Date").getValue().toString()+
+//                                         " "+ children.child("Mission Content").getValue().toString());
 
 //                                 children.child("Mission Content").getValue();
 //                                 for (DataSnapshot child : children.getChildren()) {
@@ -251,7 +250,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             for(HashMap r : postNewTodoMissionList_2){
-                                Log.d("Test","4) postNewTodoMission "+ r.values().toString());
+//                                Log.d("Test","4) postNewTodoMission "+ r.values().toString());
 
                                 databaseReference.
                                         child(keyToken).child("shared houses").child(selectedKey).child("mission").push().updateChildren(r);
@@ -300,8 +299,8 @@ public class CreateNewSharedHouse extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (selectedKey == null) {
-                    Log.d("Test", "Delete");
-                    Toast.makeText(CreateNewSharedHouse.this, "No delete please select !!!", Toast.LENGTH_SHORT).show();
+//                    Log.d("Test", "Delete");
+                    Toast.makeText(CreateNewSharedHouse.this, "Can't delete please select house!!!", Toast.LENGTH_SHORT).show();
 
 //            throw new NullPointerException();
                 } else {
@@ -323,7 +322,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
                         }
                     });
-                    Log.d("Test", "ddddddddddd " + databaseReference.child(keyToken).toString());
+//                    Log.d("Test", "ddddddddddd " + databaseReference.child(keyToken).toString());
                     selectedKey = null;
 
                     if (databaseReference.child(userToken).equals("")) {
@@ -331,27 +330,36 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
                     }
                 }
+
+                if(houses_count==0){
+                    empty_house_list.setVisibility(View.VISIBLE);
+                }
             }
         });
 //        DatabaseReference DB_r = databaseReference.child(userToken);
+
+        //updating the number of houses to each user
         valueEventListener = new ValueEventListener() {
 
 
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int count = (int) dataSnapshot.getChildrenCount(); //Cast long to int
+                int count = (int) dataSnapshot.child(keyToken).child("shared houses").getChildrenCount(); //Cast long to int
+                Log.d("Test", "House counter!!!!!!!!!!!!!!!!!!!!!!  "+ houses_count);
+
                 if (count ==0){
-                    Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! #1");
+//                    Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! #1");
                     empty_house_list.setVisibility(View.VISIBLE);
 
 
                 }else{
-                    Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! #2:  "+ count);
+//                    Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! #2:  "+ count);
                     empty_house_list.setVisibility(View.GONE);
 
 
                 }
+                houses_count = count;
 //                if(selectedKey!=null) {
 //                    Log.d("Test", "no Delete");
 //                    btn_update_house.setEnabled(true);
@@ -365,7 +373,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
             }
         };
-        databaseReference.addListenerForSingleValueEvent(valueEventListener);
+        databaseReference.addValueEventListener(valueEventListener);
 //        if(recyclerView.getChildCount()==0){
 //            empty_house_list.setVisibility(View.VISIBLE);
 //            Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! "+ recyclerView.getChildCount());
@@ -390,23 +398,13 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     }
 
     private void postHouse(){
-//        Log.d("Test",userToken);
-//        if(recyclerView.getChildCount()==0){
-//            empty_house_list.setVisibility(View.VISIBLE);
-//            Log.d("Test", "This EMPTY!!!!!!!!!!!!!!!!!!!!!! ");
-//        }
-//        else{
-//            empty_house_list.setVisibility(View.INVISIBLE);
-//        }
+
         String address = enter_home_address.getText().toString();
         String city = enter_home_city.getText().toString();
         postNewHouse postNewHouse = new postNewHouse(address, city, keyToken);
         if(keyToken==null)
             throw new ExceptionInInitializerError();
         databaseReference.child(keyToken).child("shared houses").push().setValue(postNewHouse);
-        Log.d("Test", "key token :  "+ keyToken);
-//        Log.d("Test", "ddddddddd    "+databaseReference.child(keyToken).child("shared houses"));
-
         if(keyToken==null){
             throw new ExceptionInInitializerError();
         }else{
@@ -415,27 +413,30 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         }
 
         adapter.notifyDataSetChanged();
-
+        empty_house_list.setVisibility(View.GONE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 //        if(adapter.getItemCount()>0){
-        displayHouse();
-        Log.d("Test","Key token"+ keyToken);
-        Log.d("Test","User token"+ userToken);
+        if(keyToken!=null){
+            displayHouse();
+
+        }
+//        Log.d("Test","Key token"+ keyToken);
+//        Log.d("Test","User token"+ userToken);
         databaseReference.addListenerForSingleValueEvent(valueEventListener);
     }
 
     private void displayHouse(){
-//        Log.d("Test", "ddddddddd    "+databaseReference.child(keyToken).child("shared houses"));
+
         options =
                 new FirebaseRecyclerOptions.Builder<postNewHouse>()
                     .setQuery(databaseReference.child(keyToken).child("shared houses"), postNewHouse.class).build();
 
         if(selectedKey!=null) {
-            Log.d("Test", "no Delete");
+//            Log.d("Test", "no Delete");
             btn_update_house.setEnabled(true);
             btn_delete_house.setEnabled(true);
         }
@@ -461,7 +462,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                             public void onClick(View view, int postion) {
                                 selectPost = model;
                                 selectedKey= getSnapshots().getSnapshot(position).getKey();
-                                Log.d("Test", ""+selectedKey);
+//                                Log.d("Test", ""+selectedKey);
 
 
                                 //bind data
