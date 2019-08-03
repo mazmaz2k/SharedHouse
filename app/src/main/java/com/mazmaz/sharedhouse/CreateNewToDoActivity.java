@@ -14,6 +14,8 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -29,7 +31,7 @@ public class CreateNewToDoActivity extends FragmentActivity {
     TextView mission_details_txt, enter_mission_title_txt;
     private static TextView selected_date_textView;
     Button missions_date_btn, submit_new_mission_btn ;
-    String sharedHouse_address, sharedHouse_city, sharedUserId, sharedHouseId;
+    String sharedHouse_address, sharedHouse_city, sharedUserId, sharedHouseId, selectedKey = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,18 @@ public class CreateNewToDoActivity extends FragmentActivity {
         final String sharedHouse_address = getIntent().getStringExtra("house_address");
         final String sharedHouse_city = getIntent().getStringExtra("house_city");
         final String sharedUser_Id = getIntent().getStringExtra("shared_UserId");
+        final String updatingOrPostingKey = getIntent().getStringExtra("updatingOrPostingKey");
+        String m_name = "", m_date = "", m_content ="";
+        try {
+            m_name = getIntent().getStringExtra("mission_name");
+            m_date = getIntent().getStringExtra("mission_date");
+            m_content = getIntent().getStringExtra("mission_content");
+            selectedKey = getIntent().getStringExtra("selectedKey");
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+
 
         this.sharedHouse_address = sharedHouse_address;
         this.sharedHouse_city = sharedHouse_city;
@@ -48,15 +62,32 @@ public class CreateNewToDoActivity extends FragmentActivity {
 //        Log.d("Test","Key token in create mission "+ sharedHouseId);
 //        Log.d("Test","User tokenin create mission "+ sharedUserId);
         selected_date_textView = findViewById(R.id.selected_date_textView);
+
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference(sharedHouse_id);
-        databaseReference = firebaseDatabase.getReference("SharedHouseUsers/houses/"+sharedUser_Id+"/shared houses/"+sharedHouse_id);
+        databaseReference = firebaseDatabase.getReference("SharedHouseUsers/houses/" + sharedUser_Id + "/shared houses/" + sharedHouse_id);
 
         missions_date_btn = findViewById(R.id.missions_date_btn);
         mission_details_txt = findViewById(R.id.mission_details_txt);
         enter_mission_title_txt = findViewById(R.id.enter_mission_title_txt);
+        if(m_name!=null && m_content !=null && m_date!=null && selectedKey!=null){
+            if (!m_name.isEmpty()) {
+                enter_mission_title_txt.setText(m_name);
+            }
 
+            if(!m_content.isEmpty()){
+                mission_details_txt.setText(m_content);
+            }
 
+            if(!m_date.isEmpty()){
+                selected_date_textView.setText(m_date);
+            }
+        }else{
+            m_name = "";
+            m_date = "";
+            m_content = "";
+            selectedKey = "";
+        }
 
 //                Log.d("Test",databaseReference.toString());
         submit_new_mission_btn = findViewById(R.id.submit_new_mission_btn);
@@ -76,19 +107,17 @@ public class CreateNewToDoActivity extends FragmentActivity {
 
 //                Log.d("Test", "4: "+enter_mission_title_txt.getText().toString());
 
-                if(mission_details_txt.getText().length()==0 || enter_mission_title_txt.getText().length()==0
-                        || selected_date_textView.getText().equals("Date Picker for mission")||
-                mission_details_txt==null)
-                {
-                    Toast.makeText(CreateNewToDoActivity.this,"Make sure all fields are filed", Toast.LENGTH_SHORT).show();
-                }else {
+                if (mission_details_txt.getText().length() == 0 || enter_mission_title_txt.getText().length() == 0
+                        || selected_date_textView.getText().equals("Date Picker for mission") ||
+                        mission_details_txt == null) {
+                    Toast.makeText(CreateNewToDoActivity.this, "Make sure all fields are filed", Toast.LENGTH_SHORT).show();
+                } else {
                     post_TodoMission();
 //                    Toast.makeText(CreateNewToDoActivity.this,"Not working", Toast.LENGTH_SHORT).show();
 
                 }
             }
         });
-
 
 
     }
@@ -121,7 +150,24 @@ public class CreateNewToDoActivity extends FragmentActivity {
 
         databaseReference.child("mission").push().setValue(postNewTodoMission);
 
+        if(!selectedKey.isEmpty()) {
+            databaseReference.child("mission").child(selectedKey)
+            .removeValue().
+            addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(CreateNewToDoActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+//                        Log.d("Test", databaseReference.getParent().getKey());
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(CreateNewToDoActivity.this, "Error on delete: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
+
+                }
+            });
+        }
         Intent intent = new Intent(CreateNewToDoActivity.this, SharedHouse.class);
         intent.putExtra("sharedHouseAddress",sharedHouse_address);
         intent.putExtra("sharedHouseCity",sharedHouse_city);

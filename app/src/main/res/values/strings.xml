@@ -25,4 +25,5 @@
     <string name="update_mission">Update mission</string>
     <string name="delete_mission">Delete mission</string>
     <string name="post_mission">post mission</string>
+    <string name="delete_shared_house">Delete shared house</string>
 </resources>

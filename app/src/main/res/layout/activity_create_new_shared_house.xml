@@ -48,23 +48,26 @@
 
             <Button
                 android:id="@+id/btn_post_house"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/post_shared_house"
                 android:textSize="10dp" />
 
             <Button
                 android:id="@+id/btn_update_house"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/update_shared_house"
                 android:textSize="10dp" />
 
             <Button
                 android:id="@+id/btn_delete_house"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Delete shared house"
+                android:layout_weight="1"
+                android:text="@string/delete_shared_house"
                 android:textSize="9dp" />
         </LinearLayout>
 

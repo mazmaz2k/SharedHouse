@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -258,8 +260,30 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         firebaseAuth.signOut();
 
+//        Auth.GoogleSignInApi.signOut(new GoogleApiClient.Builder(getApplicationContext()) //Use app context to prevent leaks using activity
+//                //.enableAutoManage(this /* FragmentActivity */, connectionFailedListener)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API)
+//                .build());
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if(user==null){
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+            }
+            };
+        });
+    }
 
     @Override
     public void onBackPressed() {

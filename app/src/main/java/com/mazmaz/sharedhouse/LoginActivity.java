@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -176,5 +177,24 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
         finish();
 
+
     }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        firebaseAuth = FirebaseAuth.getInstance();
+//
+//        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//                if(user!=null){
+//                    Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            };
+//        });
+//    }
 }

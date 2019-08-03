@@ -40,7 +40,8 @@ public class ShowAllMissionsActivity extends AppCompatActivity {
     private String userToken,keyToken;
     RecyclerView recyclerView;
     ValueEventListener valueEventListener;
-    Button btn_post_mission, btn_delete_mission;
+    Button btn_post_mission, btn_delete_mission, btn_update_mission;
+    String m_name, m_date, m_content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +130,38 @@ public class ShowAllMissionsActivity extends AppCompatActivity {
 
         btn_post_mission = findViewById(R.id.btn_post_mission);
         btn_delete_mission = findViewById(R.id.btn_delete_mission);
+        btn_update_mission = findViewById(R.id.btn_update_mission);
 
+        btn_update_mission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedKey == null) {
+                    Toast.makeText(ShowAllMissionsActivity.this, "Error - please select house for updating !", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Intent intent = new Intent(ShowAllMissionsActivity.this, CreateNewToDoActivity.class);
+                    intent.putExtra("shared_HouseId", keyToken);
+                    intent.putExtra("shared_UserId", userToken);
+
+                    intent.putExtra("house_address",address_t );
+                    intent.putExtra("house_city", city_t );
+
+                    intent.putExtra("mission_name", m_name);
+                    intent.putExtra("mission_date", m_date);
+                    intent.putExtra("mission_content",m_content );
+
+                    intent.putExtra("selectedKey", selectedKey);
+                    intent.putExtra("updatingOrPostingKey","UP");
+                    if(adapter!=null){
+                        adapter.notifyDataSetChanged();
+
+                    }
+
+                    finish();
+                    startActivity(intent);
+                }
+            }
+        });
         btn_post_mission.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,7 +169,7 @@ public class ShowAllMissionsActivity extends AppCompatActivity {
                 Intent intent = new Intent(ShowAllMissionsActivity.this, CreateNewToDoActivity.class);
                 intent.putExtra("shared_HouseId", keyToken);
                 intent.putExtra("shared_UserId", userToken);
-
+                intent.putExtra("updatingOrPostingKey","POS");
                 intent.putExtra("house_address",address_t );
                 intent.putExtra("house_city", city_t );
                 if(adapter!=null){
@@ -181,10 +213,10 @@ public class ShowAllMissionsActivity extends AppCompatActivity {
 //                    Log.d("Test", "ddddddddddd " + databaseReference.child(keyToken).toString());
                     selectedKey = null;
 
-                    if (databaseReference.child(userToken).equals("")) {
-                        Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! #3");
-
-                    }
+//                    if (databaseReference.child(userToken).equals("")) {
+//                        Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! #3");
+//
+//                    }
                 }
 
             }
@@ -234,7 +266,7 @@ public class ShowAllMissionsActivity extends AppCompatActivity {
         adapter = new FirebaseRecyclerAdapter<PostNewTodoMission, ShowAllMissionRecycleViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull ShowAllMissionRecycleViewHolder holder, final int position, @NonNull final PostNewTodoMission model) {
-                Log.d("Test", "model "+ model.getContent());
+//                Log.d("Test", "model "+ model.getContent());
                 holder.text_mission_name.setText(model.getName());
                 holder.text_mission_date.setText(model.getDate());
                 holder.text_mission_contact.setText(model.getContent());
@@ -245,6 +277,9 @@ public class ShowAllMissionsActivity extends AppCompatActivity {
                     public void onClick(View view, int postion) {
                         selectPost = model;
                         selectedKey= getSnapshots().getSnapshot(position).getKey();
+                        m_name = model.getName();
+                        m_content = model.getContent();
+                        m_date = model.getDate();
 
 
                     }

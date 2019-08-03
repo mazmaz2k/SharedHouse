@@ -38,12 +38,15 @@
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#000300"/>
         </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ssssssssssss"/>
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="ssssssssssss"/>-->
 
 
     </LinearLayout>
