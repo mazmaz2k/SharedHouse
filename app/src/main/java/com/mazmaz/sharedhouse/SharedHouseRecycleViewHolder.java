@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 public class SharedHouseRecycleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-//    TextView text_mission, text_mission_date,text_mission_contact;
     TextView text_house_address, text_house_city;
     Button enter_shared_house_btn;
     String sharedHouseId, sharedUserId;
@@ -29,8 +28,8 @@ public class SharedHouseRecycleViewHolder extends RecyclerView.ViewHolder implem
 
         text_house_address = itemView.findViewById(R.id.text_house_address);
         text_house_city = itemView.findViewById(R.id.text_house_city);
-
         enter_shared_house_btn = itemView.findViewById(R.id.enter_shared_house_btn);
+
         itemView.setOnClickListener(this);
 
         enter_shared_house_btn.setOnClickListener(new View.OnClickListener() {

@@ -7,51 +7,50 @@ import java.util.Map;
 
 public class PostNewTodoMission {
 
-    private String mission, missionDate, missionContent;
+    private String content, date, name;
 
     public PostNewTodoMission(){}
-    public PostNewTodoMission(String mission, String missionDate, String missionContent){
 
-        this.mission = mission;
-        this.missionDate = missionDate;
-        this.missionContent = missionContent;
+
+    public PostNewTodoMission( String content,  String date, String name)
+    {
+        this.name = name;
+        this.date = date;
+        this.content = content;
     }
 
-    public String getMission() {
-        return mission;
+    public String getName() {
+        return this.name;
     }
 
-    public String getMissionContent() {
-        return missionContent;
+    public String getContent() {
+        return this.content;
     }
 
-    public String getMissionDate() {
-        return missionDate;
+    public String getDate() {
+        return this.date;
     }
 
-    public void setMission(String mission) {
-        this.mission = mission;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setMissionContent(String missionContent) {
-        this.missionContent = missionContent;
-    }
+    public void setContent(String content) {this.content = content; }
 
-    public void setMissionDate(String missionDate) {
-        this.missionDate = missionDate;
+    public void setMissionDate(String date) {
+        this.date = date;
     }
 
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("Mission Name", mission);
-        result.put("Mission Date", missionDate);
-        result.put("Mission Content", missionContent);
-//        result.put("body", body);
-//        result.put("starCount", starCount);
-//        result.put("stars", stars);
+        result.put("Mission Content", content);
+        result.put("Mission Date", date);
+        result.put("Mission Name", name);
 
         return result;
     }
+
+
 }

@@ -2,12 +2,14 @@ package com.mazmaz.sharedhouse;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference mDatabase;
     String userId;
     String key_token;
+    boolean doubleBackToExitPressedOnce = false;
+    private static final int TIME_INTERVAL = 2000; // # milliseconds, desired time passed between two back presses.
+    private long mBackPressed;
 
 
     @Override
@@ -90,7 +95,15 @@ public class MainActivity extends AppCompatActivity {
 //                Log.d("Test", "hiiiiiiiii");
 
 
-                setToken();
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        setToken();
+
+                    }
+                };
+//        if(key_token==null){
+                runnable.run();
                 Intent i = new Intent(MainActivity.this, CreateNewSharedHouse.class);
                 i.putExtra("UserToken", userId);
                 i.putExtra("token_key",key_token);
@@ -130,6 +143,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         final FirebaseUser user = firebaseAuth.getInstance().getCurrentUser() ;
+        if(user==null){
+            firebaseAuth.signOut();
+            finish();
+            startActivity(new Intent(MainActivity.this,LoginActivity.class));
+        }
         userId = user.getUid();
         Runnable runnable = new Runnable() {
             @Override
@@ -217,7 +235,15 @@ public class MainActivity extends AppCompatActivity {
             key_token=key;
 
         }else{
-            setToken();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    setToken();
+
+                }
+            };
+//        if(key_token==null){
+            runnable.run();
         }
 
 
@@ -230,6 +256,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        firebaseAuth.signOut();
 
     }
 
@@ -237,6 +264,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis())
+        {
+            super.onBackPressed();
+            return;
+        }
+        else { Toast.makeText(getBaseContext(), "Tap back button in order to exit", Toast.LENGTH_SHORT).show(); }
+
+        mBackPressed = System.currentTimeMillis();
 
     }
 

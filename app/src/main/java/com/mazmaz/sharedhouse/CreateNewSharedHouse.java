@@ -1,5 +1,6 @@
 package com.mazmaz.sharedhouse;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,12 +26,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-
-import static java.lang.System.exit;
 
 
 public class CreateNewSharedHouse extends AppCompatActivity {
@@ -42,9 +39,9 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     RecyclerView recyclerView;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    FirebaseRecyclerOptions<postNewHouse> options;
-    FirebaseRecyclerAdapter<postNewHouse, SharedHouseRecycleViewHolder> adapter;
-    postNewHouse selectPost;
+    FirebaseRecyclerOptions<PostNewHouse> options;
+    FirebaseRecyclerAdapter<PostNewHouse, SharedHouseRecycleViewHolder> adapter;
+    PostNewHouse selectPost;
     String selectedKey;
     private String userToken,keyToken;
     LinearLayout create_housed_layout;
@@ -134,7 +131,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final LinkedList<PostNewTodoMission> postNewTodoMissionList = new LinkedList<>();
+//                final LinkedList<PostNewTodoMission> postNewTodoMissionList = new LinkedList<>();
                 final LinkedList<HashMap<String, Object>> postNewTodoMissionList_2 = new LinkedList<>();
                 if(selectedKey==null){
 //                    throw new NullPointerException();
@@ -145,7 +142,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                      databaseReference.
                              child(keyToken).child("shared houses").child(selectedKey).child("mission").addValueEventListener(new ValueEventListener() {
                          @Override
-                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                         public void onDataChange(@NonNull final DataSnapshot dataSnapshot) {
 
 //                             boolean fl = false;
 //                             Log.d("Test", "1) in on update data changed ---- "+ keyToken+"/shared houses/"+selectedKey);
@@ -161,7 +158,14 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 //                                 postNewTodoMissionList_2.add(result);
 
 //                             }
-                             for (DataSnapshot children: dataSnapshot.getChildren()){
+
+                             final Handler handler = new Handler();
+
+                             final Runnable r = new Runnable() {
+                                 @Override
+                                 public void run() {
+
+                                     for (DataSnapshot children: dataSnapshot.getChildren()){
 //                                 missions.add(String.valueOf(children.getValue()) + "1");
 //                                 if(fl==true){
 //                                     break;
@@ -171,21 +175,22 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 //                                         ,children.child("Mission Date").getValue().toString(),
 //                                         children.child("Mission Content").getValue().toString()));
 
-                                 if(children.child("Mission Name")==null){
-                                     break;
-                                 }
-                                 try {
-                                     HashMap<String, Object> result = new HashMap<>();
-                                     result.put("Mission Name", children.child("Mission Name").getValue().toString());
-                                     result.put("Mission Date", children.child("Mission Date").getValue().toString());
-                                     result.put("Mission Content", children.child("Mission Content").getValue().toString());
-                                     Log.d("Test","1) postNewTodoMission "+ result.values().toString());
+                                         if(children.child("Mission Name")==null){
+                                             break;
+                                         }
+                                         try {
+                                             HashMap<String, Object> result = new HashMap<>();
+                                             result.put("content", children.child("content").getValue().toString());
+                                             result.put("date", children.child("date").getValue().toString());
+                                             result.put("name", children.child("name").getValue().toString());
 
-                                     postNewTodoMissionList_2.add(result);
+                                             Log.d("Test","1) postNewTodoMission "+ result.values().toString());
 
-                                 }catch (Exception e ){
-                                     e.printStackTrace();
-                                 }
+                                             postNewTodoMissionList_2.add(result);
+
+                                         }catch (Exception e ){
+                                             e.printStackTrace();
+                                         }
 
 //                                 Log.d("Test","2) postNewTodoMission "+ children.child("Mission Name").getValue().toString() + " "+
 //                                         children.child("Mission Date").getValue().toString()+
@@ -206,7 +211,14 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 //                                     }
 //                                 }
 
-                             }
+                                     }
+                                     handler.postDelayed(this, 1000);
+
+                                 }
+                             };
+
+                             handler.postDelayed(r, 1000);
+
 
                          }
 
@@ -242,10 +254,10 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                     databaseReference.
                             child(keyToken).child("shared houses").child(selectedKey)
                             .setValue(
-                                    new postNewHouse(
+                                    new PostNewHouse(
                                             enter_home_address.getText().toString(),enter_home_city.getText().toString(),
-                                            keyToken,
-                                            postNewTodoMissionList
+                                            keyToken
+
                                     )).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -345,6 +357,10 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(keyToken==null){
+                    empty_house_list.setVisibility(View.VISIBLE);
+                    return;
+                }
                 int count = (int) dataSnapshot.child(keyToken).child("shared houses").getChildrenCount(); //Cast long to int
                 Log.d("Test", "House counter!!!!!!!!!!!!!!!!!!!!!!  "+ houses_count);
 
@@ -401,7 +417,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
         String address = enter_home_address.getText().toString();
         String city = enter_home_city.getText().toString();
-        postNewHouse postNewHouse = new postNewHouse(address, city, keyToken);
+        PostNewHouse postNewHouse = new PostNewHouse(address, city, keyToken);
         if(keyToken==null)
             throw new ExceptionInInitializerError();
         databaseReference.child(keyToken).child("shared houses").push().setValue(postNewHouse);
@@ -426,14 +442,14 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         }
 //        Log.d("Test","Key token"+ keyToken);
 //        Log.d("Test","User token"+ userToken);
-        databaseReference.addListenerForSingleValueEvent(valueEventListener);
+        databaseReference.addValueEventListener(valueEventListener);
     }
 
     private void displayHouse(){
 
         options =
-                new FirebaseRecyclerOptions.Builder<postNewHouse>()
-                    .setQuery(databaseReference.child(keyToken).child("shared houses"), postNewHouse.class).build();
+                new FirebaseRecyclerOptions.Builder<PostNewHouse>()
+                    .setQuery(databaseReference.child(keyToken).child("shared houses"), PostNewHouse.class).build();
 
         if(selectedKey!=null) {
 //            Log.d("Test", "no Delete");
@@ -441,14 +457,16 @@ public class CreateNewSharedHouse extends AppCompatActivity {
             btn_delete_house.setEnabled(true);
         }
         adapter =
-                new FirebaseRecyclerAdapter<postNewHouse, SharedHouseRecycleViewHolder>(options) {
+                new FirebaseRecyclerAdapter<PostNewHouse, SharedHouseRecycleViewHolder>(options) {
 
 
 
 
                     @Override
-                    protected void onBindViewHolder(@NonNull SharedHouseRecycleViewHolder holder, final int position, @NonNull final postNewHouse model) {
+                    protected void onBindViewHolder(@NonNull SharedHouseRecycleViewHolder holder, final int position, @NonNull final PostNewHouse model) {
 
+                        Log.d("Test","house address model - "+model.getAddress());
+                        Log.d("Test","house city model- "+ model.getCity());
                         holder.text_house_address.setText(model.getAddress());
                         holder.text_house_city.setText(model.getCity());
                         holder.sharedHouseId =getSnapshots().getSnapshot(position).getKey();
@@ -486,13 +504,6 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 
         adapter.startListening();
         recyclerView.setAdapter(adapter);
-//        if(recyclerView.getChildCount()==0){
-//            empty_house_list.setVisibility(View.VISIBLE);
-//            Log.d("Test", "TIS EMPTY!!!!!!!!!!!!!!!!!!!!!! ");
-//        }
-//        else{
-//            empty_house_list.setVisibility(View.INVISIBLE);
-//        }
 
     }
 }

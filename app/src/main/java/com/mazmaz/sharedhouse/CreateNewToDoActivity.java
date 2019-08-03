@@ -1,17 +1,16 @@
 package com.mazmaz.sharedhouse;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,13 +20,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CreateNewToDoActivity extends FragmentActivity {
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     TextView mission_details_txt, enter_mission_title_txt;
-    static TextView selected_date_textView;
+    private static TextView selected_date_textView;
     Button missions_date_btn, submit_new_mission_btn ;
     String sharedHouse_address, sharedHouse_city, sharedUserId, sharedHouseId;
     @Override
@@ -104,19 +104,23 @@ public class CreateNewToDoActivity extends FragmentActivity {
     }
 
     public void post_TodoMission() {
-        PostNewTodoMission postNewTodoMission = new PostNewTodoMission(enter_mission_title_txt.getText().toString(), selected_date_textView.getText().toString(),mission_details_txt.getText().toString());
+        PostNewTodoMission postNewTodoMission = new PostNewTodoMission(mission_details_txt.getText().toString(), selected_date_textView.getText().toString(),
+                enter_mission_title_txt.getText().toString());
 
-        String key = databaseReference.child("mission").push().getKey();
+//        String key = databaseReference.child("mission").push().getKey();
 //        Post post = new Post(userId, username, title, body);
 //                    SharedHome sharedHome = new SharedHome(userMail);
 
-        Map<String, Object> sharedHomeValues = postNewTodoMission.toMap();
+//        HashMap<String, Object> sharedHomeValues = postNewTodoMission.toMap();
 
-        Map<String, Object> childUpdates = new HashMap<>();
+//        Map<String, Object> childUpdates = new HashMap<>();
 //                    childUpdates.put("/houses/" + key, sharedHomeValues);
-        childUpdates.put("/mission/" + key, sharedHomeValues);
+//        childUpdates.put("/mission/" + key, postNewTodoMission);
 
-        databaseReference.updateChildren(childUpdates);
+//        databaseReference.updateChildren(childUpdates);
+
+        databaseReference.child("mission").push().setValue(postNewTodoMission);
+
 
         Intent intent = new Intent(CreateNewToDoActivity.this, SharedHouse.class);
         intent.putExtra("sharedHouseAddress",sharedHouse_address);
@@ -136,9 +140,11 @@ public class CreateNewToDoActivity extends FragmentActivity {
 
 
 
+    @SuppressLint("ValidFragment")
     public static class MissionDatePickFragment extends DialogFragment {
 
         public MissionDatePickFragment(){}
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -147,11 +153,12 @@ public class CreateNewToDoActivity extends FragmentActivity {
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
 
-            return new DatePickerDialog(getActivity(), dateSetListener, year, month, day);
+            return new DatePickerDialog(Objects.requireNonNull(getActivity()), dateSetListener, year, month, day);
         }
 
         private DatePickerDialog.OnDateSetListener dateSetListener =
                 new DatePickerDialog.OnDateSetListener() {
+                    @SuppressLint("SetTextI18n")
                     public void onDateSet(DatePicker view, int year, int month, int day) {
 
                         Toast.makeText(getActivity(), "selected date is " + view.getYear() +

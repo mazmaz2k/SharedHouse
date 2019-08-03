@@ -21,4 +21,8 @@
     <string name="update_shared_house">Update shared house</string>
     <string name="reset_password">Reset password</string>
     <string name="existing_houses">Existing houses</string>
+    <string name="enter">Enter</string>
+    <string name="update_mission">Update mission</string>
+    <string name="delete_mission">Delete mission</string>
+    <string name="post_mission">post mission</string>
 </resources>

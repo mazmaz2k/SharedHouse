@@ -57,8 +57,8 @@ public class SharedHouse extends AppCompatActivity {
                 intent.putExtra("shared_HouseId", houseId);
                 intent.putExtra("shared_UserId", sharedUserId);
 
-//                intent.putExtra("house_address",address_t );
-//                intent.putExtra("house_city", city_t );
+                intent.putExtra("house_address",address_t );
+                intent.putExtra("house_city", city_t );
                 finish();
                 startActivity(intent);
 
