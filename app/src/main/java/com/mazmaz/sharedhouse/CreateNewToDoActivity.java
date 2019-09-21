@@ -4,13 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,8 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class CreateNewToDoActivity extends FragmentActivity {
@@ -30,7 +28,7 @@ public class CreateNewToDoActivity extends FragmentActivity {
     DatabaseReference databaseReference;
     TextView mission_details_txt, enter_mission_title_txt;
     private static TextView selected_date_textView;
-    Button missions_date_btn, submit_new_mission_btn ;
+    private ImageButton missions_date_btn, submit_new_mission_btn ;
     String sharedHouse_address, sharedHouse_city, sharedUserId, sharedHouseId, selectedKey = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +110,14 @@ public class CreateNewToDoActivity extends FragmentActivity {
                         mission_details_txt == null) {
                     Toast.makeText(CreateNewToDoActivity.this, "Make sure all fields are filed", Toast.LENGTH_SHORT).show();
                 } else {
-                    post_TodoMission();
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                post_TodoMission();
+
+                            }
+                        }).start();
 //                    Toast.makeText(CreateNewToDoActivity.this,"Not working", Toast.LENGTH_SHORT).show();
 
                 }
@@ -156,26 +161,38 @@ public class CreateNewToDoActivity extends FragmentActivity {
             addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Toast.makeText(CreateNewToDoActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateNewToDoActivity.this, "Executed", Toast.LENGTH_SHORT).show();
 //                        Log.d("Test", databaseReference.getParent().getKey());
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(CreateNewToDoActivity.this, "Error on delete: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateNewToDoActivity.this, "Error on execution: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
 
                 }
             });
-        }
-        Intent intent = new Intent(CreateNewToDoActivity.this, SharedHouse.class);
-        intent.putExtra("sharedHouseAddress",sharedHouse_address);
-        intent.putExtra("sharedHouseCity",sharedHouse_city);
-        intent.putExtra("sharedHouseId",sharedHouseId);
-        intent.putExtra("sharedUserId",sharedUserId);
 
-        finish();
-        startActivity(intent);
+            Intent intent = new Intent(CreateNewToDoActivity.this, ShowAllMissionsActivity.class);
+            intent.putExtra("house_address",sharedHouse_address);
+            intent.putExtra("house_city",sharedHouse_city);
+            intent.putExtra("shared_HouseId",sharedHouseId);
+            intent.putExtra("shared_UserId",sharedUserId);
+
+            startActivity(intent);
+            finish();
+        }else {
+            Intent intent = new Intent(CreateNewToDoActivity.this, SharedHouse.class);
+            intent.putExtra("sharedHouseAddress",sharedHouse_address);
+            intent.putExtra("sharedHouseCity",sharedHouse_city);
+            intent.putExtra("sharedHouseId",sharedHouseId);
+            intent.putExtra("sharedUserId",sharedUserId);
+
+            startActivity(intent);
+            finish();
+        }
+
+
     }
 
     public void showDatePicker(View v) {
@@ -211,7 +228,7 @@ public class CreateNewToDoActivity extends FragmentActivity {
                                 " / " + (view.getMonth()+1) +
                                 " / " + view.getDayOfMonth(), Toast.LENGTH_SHORT).show();
 
-                        selected_date_textView.setText( month+"/"+day+"/"+year);
+                        selected_date_textView.setText( month+1+"/"+day+"/"+year);
                         selected_date_textView.setTextSize(30);
                     }
 

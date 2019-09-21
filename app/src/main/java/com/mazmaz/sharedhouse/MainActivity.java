@@ -1,40 +1,36 @@
 package com.mazmaz.sharedhouse;
 
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.GoogleApiClient;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.Exclude;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-    private Button btnLogout, btn_create_new_house, btn_existing_houses;
+    private ImageButton btn_create_new_house, btn_existing_houses;
     private FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference mDatabase;
     String userId;
+    private ImageButton btnLogout;
     String key_token;
     boolean doubleBackToExitPressedOnce = false;
-    private static final int TIME_INTERVAL = 2000; // # milliseconds, desired time passed between two back presses.
+    private static final int TIME_INTERVAL = 3000; // # milliseconds, desired time passed between two back presses.
     private long mBackPressed;
 
 
@@ -258,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        firebaseAuth.signOut();
+//        firebaseAuth.signOut();
 
 //        Auth.GoogleSignInApi.signOut(new GoogleApiClient.Builder(getApplicationContext()) //Use app context to prevent leaks using activity
 //                //.enableAutoManage(this /* FragmentActivity */, connectionFailedListener)
@@ -287,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis())
         {
             super.onBackPressed();

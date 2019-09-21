@@ -3,8 +3,11 @@
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#3c523d</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#5b5b5b</color>
     <color name="black_rad">#684545</color>
+    <color name="lightGray">#EDEDED</color>
+    <color name="lightBlue">#80abd9</color>
+
 </resources>

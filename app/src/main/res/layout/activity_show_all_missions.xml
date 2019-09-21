@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
     tools:context=".ShowAllMissionsActivity">
 
     <!--<LinearLayout-->
@@ -48,34 +47,81 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_post_mission"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/post_mission"
-                android:textSize="10dp" />
+                android:orientation="vertical"
+                android:gravity="center"
+                >
 
-            <Button
-                android:id="@+id/btn_update_mission"
+                <ImageButton
+                    android:id="@+id/btn_post_mission"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/add_mission"
+                    android:background="@color/white"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/post_mission"
+                    android:textSize="16dp" />
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1">
+                <ImageButton
+                    android:id="@+id/btn_update_mission"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:src="@mipmap/update_mission"
+                    />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/update_mission"
-                android:textSize="10dp" />
+                android:textSize="16dp"
+                />
+            </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_delete_mission"
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/delete_mission"
-                android:textSize="9dp" />
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1">
+                <ImageButton
+                    android:id="@+id/btn_delete_mission"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/remove_mission"
+                    android:background="@color/white"
+                    android:textSize="9dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delete_mission"
+                    android:textSize="16dp"
+
+                    />
+            </LinearLayout>
+
+
         </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@color/common_google_signin_btn_text_dark_disabled"/>
 
-
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
 
         android:id="@+id/show_all_missions_recycler_view"
         android:layout_width="match_parent"

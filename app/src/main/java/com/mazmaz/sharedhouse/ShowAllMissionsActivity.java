@@ -1,18 +1,16 @@
 package com.mazmaz.sharedhouse;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -24,8 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.Objects;
 
 public class ShowAllMissionsActivity extends AppCompatActivity {
 
@@ -40,7 +36,7 @@ public class ShowAllMissionsActivity extends AppCompatActivity {
     private String userToken,keyToken;
     RecyclerView recyclerView;
     ValueEventListener valueEventListener;
-    Button btn_post_mission, btn_delete_mission, btn_update_mission;
+    ImageButton btn_post_mission, btn_delete_mission, btn_update_mission;
     String m_name, m_date, m_content;
 
     @Override
@@ -68,8 +64,8 @@ public class ShowAllMissionsActivity extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference("SharedHouseUsers").child("houses").child(userToken);
 
 //        databaseReference = firebaseDatabase.getReference("sharedhouseusers/SharedHouseUsers/houses/"+keyToken+"/shared houses");
-        Log.d("Test", "1) ref:  "+ databaseReference.child("shared houses").
-                child(keyToken).child("mission"));
+//        Log.d("Test", "1) ref:  "+ databaseReference.child("shared houses").
+//                child(keyToken).child("mission"));
 
 
 

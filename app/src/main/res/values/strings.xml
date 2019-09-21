@@ -14,7 +14,7 @@
     <string name="password_reset">Password reset</string>
     <string name="login">LogIn</string>
     <string name="join_us">Join us</string>
-    <string name="create_new_house_in_db">Create new house in DB</string>
+    <string name="create_new_house_in_db">Create new house \n in DB</string>
     <string name="enter_adress">Enter Adress</string>
     <string name="enter_city">Enter City</string>
     <string name="post_shared_house">Post shared house</string>
@@ -26,4 +26,10 @@
     <string name="delete_mission">Delete mission</string>
     <string name="post_mission">post mission</string>
     <string name="delete_shared_house">Delete shared house</string>
+    <string name="sign_in_text_on_registration_activity">Sign in text on registration activity</string>
+    <string name="logout">Logout</string>
+    <string name="push_to_select">Push to select</string>
+    <string name="submit">Submit</string>
+    <string name="create_new_mission">Create new mission:</string>
+    <string name="date_picker_for_mission">Date Picker for mission</string>
 </resources>

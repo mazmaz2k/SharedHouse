@@ -3,18 +3,20 @@ package com.mazmaz.sharedhouse;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.Auth;
+//import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
     public static final int REQUEST_CODE = 1234;
+    private static final int TIME_INTERVAL = 3000; // # milliseconds, desired time passed between two back presses.
+    private long mBackPressed;
 
 
 
@@ -54,6 +58,17 @@ public class LoginActivity extends AppCompatActivity {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
 
         }
+
+
+        SharedPreferences settings = getSharedPreferences("prefs", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("firstRun", false);
+        editor.apply();
+
+        boolean firstRun = settings.getBoolean("firstRun", true);
+        Log.d("TAG1", "firstRun: " + Boolean.valueOf(firstRun).toString());
+
+
         initializeGUI();
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -131,6 +146,7 @@ public class LoginActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     Toast.makeText(LoginActivity.this,"Login Successful",Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                    finish();
                 }
                 else{
                     progressDialog.dismiss();
@@ -175,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        finish();
+//        finish();
 
 
     }
@@ -197,4 +213,18 @@ public class LoginActivity extends AppCompatActivity {
 //            };
 //        });
 //    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis())
+        {
+            super.onBackPressed();
+            return;
+        }
+        else { Toast.makeText(getBaseContext(), "Tap back button in order to exit", Toast.LENGTH_SHORT).show(); }
+
+        mBackPressed = System.currentTimeMillis();
+
+    }
 }

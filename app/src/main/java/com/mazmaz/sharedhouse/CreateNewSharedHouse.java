@@ -1,17 +1,18 @@
 package com.mazmaz.sharedhouse;
 
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,12 +29,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 
 public class CreateNewSharedHouse extends AppCompatActivity {
 
-    Button btn_post_house, btn_update_house, btn_delete_house;
+    ImageButton btn_post_house, btn_update_house, btn_delete_house;
     EditText enter_home_address;
     EditText enter_home_city;
     RecyclerView recyclerView;
@@ -49,6 +49,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
     ValueEventListener valueEventListener;
     private int show_only_houses_list;
     private int houses_count= 0;
+    private GestureDetector gd;
 
 
     @Override
@@ -184,7 +185,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
                                              result.put("date", children.child("date").getValue().toString());
                                              result.put("name", children.child("name").getValue().toString());
 
-                                             Log.d("Test","1) postNewTodoMission "+ result.values().toString());
+//                                             Log.d("Test","1) postNewTodoMission "+ result.values().toString());
 
                                              postNewTodoMissionList_2.add(result);
 
@@ -212,10 +213,13 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 //                                 }
 
                                      }
-                                     handler.postDelayed(this, 1000);
+                                     Log.d("Test","1) handler ");
+
+//                                     handler.postDelayed(this, 1000);
 
                                  }
                              };
+                             Log.d("Test","2) handler ");
 
                              handler.postDelayed(r, 1000);
 
@@ -400,6 +404,8 @@ public class CreateNewSharedHouse extends AppCompatActivity {
 //            empty_house_list.setVisibility(View.INVISIBLE);
 //        }
 
+
+
     }
 
 
@@ -506,4 +512,7 @@ public class CreateNewSharedHouse extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
     }
+
+
+
 }
